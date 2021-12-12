@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from 'react-router-dom'
 import { Row, Col, Drawer } from "antd";
 import { withTranslation } from "react-i18next";
 import Container from "../../common/Container";
@@ -17,6 +18,7 @@ import {
 } from "./styles";
 
 const Header = ({ t }: any) => {
+
   const [visible, setVisibility] = useState(false);
 
   const showDrawer = () => {
@@ -35,6 +37,7 @@ const Header = ({ t }: any) => {
       });
       setVisibility(false);
     };
+
     return (
       <>
         <CustomNavLinkSmall onClick={() => scrollTo("about")}>
@@ -46,17 +49,24 @@ const Header = ({ t }: any) => {
         <CustomNavLinkSmall onClick={() => scrollTo("product")}>
           <Span>{t("Product")}</Span>
         </CustomNavLinkSmall>
+        <CustomNavLinkSmall onClick={() => scrollTo("contact")}>
+          <Span>{t("Contact")}</Span>
+        </CustomNavLinkSmall>
         <CustomNavLinkSmall
           style={{ width: "180px" }}
-          onClick={() => scrollTo("contact")}
+          onClick={() => window.location.href='/login'}
         >
           <Span>
-            <Button>{t("Contact")}</Button>
+            <Button>{t("Sign Up")}</Button>
           </Span>
         </CustomNavLinkSmall>
       </>
     );
   };
+
+  if(["/login", "/dashboard"].includes(window.location.pathname)) {
+    return null;
+  }
 
   return (
     <HeaderSection>

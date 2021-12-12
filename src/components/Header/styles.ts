@@ -4,6 +4,11 @@ import { MenuOutlined } from "@ant-design/icons";
 
 export const HeaderSection = styled("header")`
   padding: 1rem 0.5rem;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 500;
+  width: -webkit-fill-available;
 
   .ant-row-space-between {
     align-items: center;
@@ -50,7 +55,7 @@ export const Burger = styled("div")`
   display: none;
 
   svg {
-    fill: #2e186a;
+    fill: #94618e;
   }
 `;
 

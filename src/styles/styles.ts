@@ -47,7 +47,7 @@ export const Styles = createGlobalStyle`
 
         :focus-within {
             background: none;
-            box-shadow: #2e186a 0px 0px 0px 1px;
+            // box-shadow: #2e186a 0px 0px 0px 1px;
         }
     }
 
