@@ -1,29 +1,24 @@
 import React from 'react';
-import { Card, Button } from '@mui/material';
+import { Card, Button, Paper, Link } from '@mui/material';
 
 const UpgradeCard = () => {
   return (
-    <Card className="p-sm-24 mb-6">
-      <Card
-        elevation={0}
-        className="box-shadow-none text-center relative bg-light-primary p-sm-24"
+    <Card className="mb-6">
+      <Paper
+        elevation={2}
+        className="text-center relative bg-ultralight-primary p-sm-9"
       >
         <img
-          src="/assets/images/illustrations/upgrade.svg"
+          src="/img/svg/rocket-launch-small.svg"
           alt="upgrade"
         />
         <p className="text-muted m-0 py-6">
-          Upgrade to <b>ScribeMe PRO</b> for <br /> more resources
+          Upgrade to <b>BuckBeak PRO</b> for <br /> more resources
         </p>
-        <Button
-          className="uppercase"
-          size="large"
-          variant="contained"
-          color="primary"
-        >
-          upgrade now
-        </Button>
-      </Card>
+        <Link href="#" color="primary" underline="none">
+          Upgrade Now
+        </Link>
+      </Paper>
     </Card>
   )
 }

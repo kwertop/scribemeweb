@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from 'react-router-dom'
 import { Row, Col, Drawer } from "antd";
 import { withTranslation } from "react-i18next";
 import Container from "../../common/Container";
@@ -64,7 +63,11 @@ const Header = ({ t }: any) => {
     );
   };
 
-  if(["/login", "/dashboard"].includes(window.location.pathname)) {
+  if(["/login", "/dashboard", "/signup", "/trash", "/preferences"].includes(window.location.pathname)) {
+    return null;
+  }
+
+  if(window.location.pathname.includes("notes")) {
     return null;
   }
 

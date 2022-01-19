@@ -57,6 +57,9 @@ export const colorStyles = makeStyles((theme: Theme) => ({
     '.bg-light-primary': {
       background: `rgba(var(--primary), 0.15) !important`,
     },
+    '.bg-ultralight-primary': {
+      background: `rgba(var(--primary), 0.05) !important`,
+    },
     '.bg-light-secondary': {
       background: `${lighten(theme.palette.secondary.main, 0.85)} !important`,
     },
@@ -95,5 +98,19 @@ export const colorStyles = makeStyles((theme: Theme) => ({
     '.border-color-paper': {
       borderColor: `${theme.palette.background.paper} !important`,
     },
+    '.meeting-card': {
+      display: 'flex'
+    },
+    '.meeting-card:hover': {
+      cursor: 'pointer',
+      background: 'rgba(0, 0, 0, 0.07) !important'
+    },
+    '.project-card': {
+      border: '0.5px solid transparent'
+    },
+    '.project-card:hover': {
+      border: '0.5px solid',
+      borderColor: 'rgba(0, 0, 0, 0.4) !important'
+    }
   },
 }))

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import SearchIcon from '@mui/icons-material/Search';

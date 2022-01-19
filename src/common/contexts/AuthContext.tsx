@@ -65,7 +65,7 @@ const AuthContext = createContext({
   ...initialState,
   login: (email: string, password: string) => { console.log("came here man"); Promise.resolve(); },
   logout: () => {},
-  register: (email: string, username: string, password: string) => Promise.resolve()
+  register: (email: string, name: string, password?: string, profileImg?: string) => Promise.resolve()
 });
 
 interface Props {
@@ -95,10 +95,12 @@ export const AuthProvider = ({ children }: Props) => {
     });
   }
 
-  const register = async (email: string, username: string, password: string) => {
+  const register = async (email: string, name: string, password?: string, profileImg?: string) => {
     const response = await axios.post('http://localhost:3100/signup', {
       email,
-      password
+      password,
+      name,
+      profileImg
     });
 
     const { token, user } = response.data;

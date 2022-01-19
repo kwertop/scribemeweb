@@ -5,12 +5,39 @@ const routes = [
     component: "Home",
   },
   {
-    path: ["/login"],
+    path: ["/dashboard"],
     exact: true,
-    component: "Login"
+    component: "Dashboard"
   },
   {
-    path: ["/dashboard"],
+    path: ["/login"],
+    exact: true,
+    component: "Login",
+    toDashboard: true
+  },
+  {
+    path: ["/signup"],
+    exact: true,
+    component: "Signup",
+    toDashboard: true
+  },
+  {
+    path: ["/notes/:code"],
+    exact: true,
+    component: "Dashboard"
+  },
+  {
+    path: ["/notes"],
+    exact: true,
+    component: "Dashboard"
+  },
+  {
+    path: ["/trash"],
+    exact: true,
+    component: "Dashboard"
+  },
+  {
+    path: ["/preferences"],
     exact: true,
     component: "Dashboard"
   }

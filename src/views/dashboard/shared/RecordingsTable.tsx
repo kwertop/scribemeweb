@@ -36,13 +36,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const RecordingsTable = () => {
+interface Props {
+  data: any;
+}
+
+const RecordingsTable = ({ data }: Props) => {
   const classes = useStyles();
 
   return (
     <Card elevation={3} className="pt-5 mb-6">
       <div className="flex justify-between items-center px-6 mb-3">
-        <span className="card-title">your recordings</span>
+        <span className="card-title">my recordings</span>
         <Select labelId="simple-select-label" size="small" defaultValue="this_month">
           <MenuItem value="this_month">This Month</MenuItem>
           <MenuItem value="last_month">Last Month</MenuItem>
@@ -72,7 +76,7 @@ const RecordingsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {productList.map((product, index) => (
+            {data.meetingNotes.map((meeting: any, index: number) => (
                 <TableRow key={index} hover>
                   <TableCell
                     className="px-0 capitalize"
@@ -80,9 +84,9 @@ const RecordingsTable = () => {
                     align="left"
                   >
                     <div className="flex items-center">
-                      <Avatar src={product.imgUrl} />
+                      <Avatar src={meeting.title} />
                       <p className="m-0 ml-8">
-                        {product.name}
+                        {meeting.title}
                       </p>
                     </div>
                   </TableCell>
@@ -91,11 +95,7 @@ const RecordingsTable = () => {
                     align="left"
                     colSpan={2}
                   >
-                    $
-                    {product.price > 999
-                      ? (product.price / 1000).toFixed(1) +
-                        'k'
-                      : product.price}
+                    {meeting.code}
                   </TableCell>
 
                   <TableCell
@@ -103,7 +103,7 @@ const RecordingsTable = () => {
                     align="left"
                     colSpan={2}
                   >
-                    {product.available ? (
+                    {/*{product.available ? (
                       product.available < 20 ? (
                         <small className="border-radius-4 bg-secondary text-white px-2 py-2px">
                           {product.available} available
@@ -117,7 +117,8 @@ const RecordingsTable = () => {
                       <small className="border-radius-4 bg-error text-white px-2 py-2px">
                         out of stock
                       </small>
-                    )}
+                    )}*/}
+                    {meeting.viaMeetingCode}
                   </TableCell>
                   <TableCell className="px-0" colSpan={1}>
                     <IconButton>

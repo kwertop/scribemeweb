@@ -3,6 +3,9 @@ import { Theme } from '@mui/material/styles';
 
 export const commonStyles = makeStyles((theme: Theme) => ({
   '@global': {
+    '.full-width-div': {
+      width: '-webkit-fill-available'
+    },
     '.circular-image-small': {
       height: '48px',
       width: '48px',
@@ -59,5 +62,10 @@ export const commonStyles = makeStyles((theme: Theme) => ({
     '.opacity-1': {
       opacity: 1,
     },
+    '.fixed-bottom': {
+      position: 'fixed',
+      bottom: 0,
+      width: '100%'
+    }
   },
 }))

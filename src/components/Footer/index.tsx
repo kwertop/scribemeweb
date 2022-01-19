@@ -7,14 +7,10 @@ import i18n from "i18next";
 import {
   FooterSection,
   Title,
-  NavLink,
-  Extra,
-  LogoContainer,
   Para,
   Large,
   Chat,
   Empty,
-  FooterContainer,
   Language,
   Label,
   LanguageSwitch,
@@ -45,7 +41,11 @@ const Footer = ({ t }: any) => {
     );
   };
 
-  if(["/login", "/dashboard"].includes(window.location.pathname)) {
+  if(["/login", "/dashboard", "/signup", "/trash", "/preferences"].includes(window.location.pathname)) {
+    return null;
+  }
+
+  if(window.location.pathname.includes("notes")) {
     return null;
   }
 

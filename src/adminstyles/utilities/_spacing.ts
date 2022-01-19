@@ -23,10 +23,28 @@ export const spacingStyles = makeStyles((theme: Theme) => ({
         padding: '16px !important',
       },
     },
+    '.p-sm-9': {
+      padding: '9px !important',
+      [theme.breakpoints.down('sm')]: {
+        padding: '6px !important',
+      },
+    },
     '.px-sm-24': {
       padding: '0px 24px !important',
       [theme.breakpoints.down('sm')]: {
         padding: '0px 12px !important',
+      },
+    },
+    '.px-sm-25': {
+      padding: '0px 25px !important',
+      [theme.breakpoints.down('sm')]: {
+        padding: '0px 12px !important',
+      },
+    },
+    '.pxr-sm-16': {
+      padding: '0px 16px 0px 0px !important',
+      [theme.breakpoints.down('sm')]: {
+        padding: '0px 8px 0px 0px !important',
       },
     },
     '.pt-sm-24': {
@@ -85,6 +103,7 @@ export const spacingStyles = makeStyles((theme: Theme) => ({
     '.h-full-screen': { height: '100vh' },
     '.min-h-full-screen': { minHeight: '100vh !important' },
     '.h-150px': { height: '150px !important' },
+    '.h-44px': { height: '44px !important' },
     '.size-36': { height: '36px !important', width: '36px !important' },
     '.size-24': { height: '24px !important', width: '24px !important' },
     ...generateMarginPadding(0, 25, 0.25, 'rem'),

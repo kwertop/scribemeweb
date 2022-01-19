@@ -3,9 +3,11 @@ import { useTheme, Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 
 import AdminSideNav from '../AdminSideNav';
-import { Switch, Hidden } from '@mui/material';
+import AdminBrand from '../AdminBrand';
+import { Switch, Hidden, Button } from '@mui/material';
 import { convertHexToRGB } from '../../common/utils/convertHexToRGB';
 import { useSettings } from '../../common/utils/useSettings';
+import PlanButton from '../PlanButton';
 
 interface StyleProps {
   width: string | undefined;
@@ -93,7 +95,18 @@ const AdminLayoutSideNav = () => {
   return (
     <div className={classes.sidenav}>
       <div className="flex-column relative h-full">
+        <AdminBrand>
+          <Hidden smDown>
+            <Switch
+              onChange={handleSidenavToggle}
+              checked={leftSidebar.mode !== 'full'}
+              color="secondary"
+              size="small"
+            />
+          </Hidden>
+        </AdminBrand>
         <AdminSideNav />
+        <PlanButton/>
       </div>
     </div>
   );

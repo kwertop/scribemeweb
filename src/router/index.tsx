@@ -13,6 +13,22 @@ const Router = () => {
     {
       path: '/dashboard',
       component: lazy(() => import('../views/dashboard/Default'))
+    },
+    {
+      path: '/notes/:code',
+      component: lazy(() => import('../views/notes/MeetingNote'))
+    },
+    {
+      path: '/notes',
+      component: lazy(() => import('../views/notes/MeetingList'))
+    },
+    {
+      path: '/trash',
+      component: lazy(() => import('../views/notes/TrashMeetings'))
+    },
+    {
+      path: '/preferences',
+      component: lazy(() => import('../views/Settings'))
     }
   ];
 

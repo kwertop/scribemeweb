@@ -1,24 +1,18 @@
 import React from 'react';
 import {
-  Icon,
   IconButton,
   MenuItem,
   Avatar,
   useMediaQuery,
   Hidden
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-import WebAssetIcon from '@mui/icons-material/WebAsset';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
-import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import AdminMenu from '../AdminMenu';
 import AdminSearchBox from '../AdminSearchBox';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useTheme, Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
@@ -76,6 +70,7 @@ interface LogoutHook {
 }
 
 const AdminTopBar = () => {
+  const history = useHistory();
   const theme = useTheme();
   const classes = useStyles();
   const { settings, updateSettings } = useSettings();
@@ -93,6 +88,10 @@ const AdminTopBar = () => {
     });
   }
 
+  const openPreferences = (event: any) => {
+    history.push('/preferences');
+  }
+
   const handleSidebarToggle = () => {
     let { layoutSettings } = settings;
     let mode;
@@ -107,6 +106,10 @@ const AdminTopBar = () => {
     updateSidebarMode({ mode });
   }
 
+  if(["/preferences"].includes(window.location.pathname)) {
+    return null;
+  }
+
   return (
     <div className={classes.topbar}>
       <div className={clsx({ 'topbar-hold': true, fixed: fixed })}>
@@ -117,20 +120,6 @@ const AdminTopBar = () => {
             >
                 <MenuOpenIcon />
             </IconButton>
-
-            <div className="hide-on-mobile">
-                <IconButton>
-                    <MailOutlineIcon />
-                </IconButton>
-
-                <IconButton>
-                    <WebAssetIcon />
-                </IconButton>
-
-                <IconButton>
-                    <StarOutlineIcon />
-                </IconButton>
-            </div>
           </div>
           <div className="flex items-center">
             <AdminSearchBox />
@@ -152,22 +141,11 @@ const AdminTopBar = () => {
                 </div>
               }
             >
-              <MenuItem>
-                <Link className={classes.menuItem} to="/">
-                  <HomeIcon />
-                  <span className="pl-4"> Home </span>
-                </Link>
+              <MenuItem onClick={openPreferences}>
+                <PersonIcon />
+                <span className="pl-4"> Profile </span>
               </MenuItem>
-              <MenuItem>
-                <Link
-                  className={classes.menuItem}
-                  to="/page-layouts/user-profile"
-                >
-                  <PersonIcon />
-                  <span className="pl-4"> Profile </span>
-                </Link>
-              </MenuItem>
-              <MenuItem className={classes.menuItem}>
+              <MenuItem className={classes.menuItem} onClick={openPreferences}>
                 <SettingsIcon />
                 <span className="pl-4"> Settings </span>
               </MenuItem>

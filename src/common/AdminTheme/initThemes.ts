@@ -1,5 +1,5 @@
 import { themeColors } from './themeColors';
-import { createMuiTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import { forEach, merge } from 'lodash';
 import themeOptions from './themeOptions';
 
@@ -10,7 +10,7 @@ function createAdminThemes() {
 
   forEach(themeColors, (value, key) => {
     let mergedTheme: any = merge({}, themeOptions, value);
-    themes[key] = createMuiTheme(mergedTheme);
+    themes[key] = createTheme(mergedTheme);
   });
   return themes;
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LoginContainer, ButtonContainer, FormGroup } from "./styles";
+import { LoginContainer, FormGroup } from "./styles";
 import { LoginProps } from "./types";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -9,30 +9,25 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Button from "@mui/material/Button";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Icon from "@mui/material/Icon";
+import Link from '@mui/material/Link';
+import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import { SvgIcon } from "../../common/SvgIcon";
 import { FormField } from "../../common/FormField";
+import { LoginFooter } from "../../common/LoginFooter";
+import { LoginBottomField } from "../../common/LoginBottomField";
 import { GoogleLogin } from "react-google-login";
 import { createBrowserHistory } from 'history';
 import useAuth from "../../common/utils/useAuth";
+
+import { LinkedIn } from 'react-linkedin-login-oauth2';
+import MicrosoftLogin from "react-microsoft-login";
 
 const clientId = "696423802540-kdaruhuemo2foec1a0eqj9ortf8egr7n.apps.googleusercontent.com";
 
 const LoginForm = ({id}: LoginProps) => {
   const history: any = createBrowserHistory({ forceRefresh: true });
-
-  const googleIcon = (
-    <SvgIcon src="google.svg" width="100%" height="100%" />
-  );
-
-  const onSuccess = (res: any) => {
-    console.log('[Login Success] currentUser: ', res.profileObj);
-  }
-
-  const onFailure = (res: any) => {
-    console.log('[Login Failed] res: ', res);
-  }
+  const { login, register, isAuthenticated } = useAuth();
 
   const [ showPassword, setShowPassword ] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -42,7 +37,48 @@ const LoginForm = ({id}: LoginProps) => {
   const [ password, setPassword ] = useState('');
   const [ loading, setLoading ] = useState(false);
 
-  const { login } = useAuth();
+  if(isAuthenticated) {
+    history.push('/dashboard');
+    return null;
+  }
+
+  const googleIcon = (
+    <SvgIcon src="google.svg" width="100%" height="100%" />
+  );
+
+  const microsoftIcon = (
+    <SvgIcon src="microsoft.svg" width="100%" height="100%" />
+  );
+
+  const appleIcon = (
+    <SvgIcon src="apple-logo.svg" width="100%" height="100%" />
+  );
+
+  const onGoogleSuccess = async (res: any) => {
+    console.log('[Login Success] currentUser: ', res.profileObj);
+    const profile: any = res.profileObj;
+    const email: string = profile.email;
+    const name: string = profile.name;
+    const profileImg: string = profile.imageUrl;
+    const googleId: string = profile.googleId;
+
+    try {
+      // const response = await register(email, name, undefined, profileImg);
+      // history.push('/dashboard');
+    }
+    catch(err: any) {
+      //show error
+    }
+  }
+
+  const onGoogleFailure = (res: any) => {
+    console.log('[Login Failed] res: ', res);
+    //call API to save data or capture event in analytics
+  }
+
+  const authHandler = (err: any, data: any) => {
+    console.log(err, data);
+  };
 
   const handleLoginFormSubmit = async (event: any) => {
     event.preventDefault();
@@ -65,14 +101,52 @@ const LoginForm = ({id}: LoginProps) => {
           <GoogleLogin
             clientId={clientId}
             render={renderProps => (
-              <Button onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={googleIcon} variant="outlined" fullWidth>
-                Sign In With Google
+              <Button
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}
+                startIcon={googleIcon}
+                variant="outlined"
+                style={{textTransform: 'none', width: '80%'}}
+              >
+                Sign in with Google
               </Button>
             )}
-            onSuccess={onSuccess}
-            onFailure={onFailure}
+            onSuccess={onGoogleSuccess}
+            onFailure={onGoogleFailure}
             cookiePolicy={'single_host_origin'}
             isSignedIn={true}
+          />
+        </FormField>
+        <FormField>
+          <LinkedIn
+            clientId="78jmaaeeipd7h3"
+            redirectUri={`${window.location.origin}/login`}
+            onSuccess={(code) => {
+              console.log(code);
+            }}
+            onError={(error) => {
+              console.log(error);
+            }}
+          >
+            {({ linkedInLogin }) => (
+              <Button
+                onClick={linkedInLogin}
+                startIcon={appleIcon}
+                variant="outlined"
+                style={{textTransform: 'none', width: '80%'}}
+              >
+                Sign in with Apple
+              </Button>
+            )}
+          </LinkedIn>
+        </FormField>
+        <FormField>
+          <MicrosoftLogin
+            clientId={"f8c7976f-3e93-482d-88a3-62a1133cbbc3"}
+            authCallback={authHandler}
+            children={<Button startIcon={microsoftIcon} variant="outlined" style={{textTransform: 'none', width: '312px'}}>Sign in with Microsoft</Button>}
+            useLocalStorageCache={true}
+            className={"full-width-div"}
           />
         </FormField>
         <Divider>
@@ -110,16 +184,29 @@ const LoginForm = ({id}: LoginProps) => {
             }}
           />
         </FormField>
-        <FormField>
+        <LoginBottomField>
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            control={<Checkbox value="remember" color="primary" size="small" />}
+            label={<Typography variant="body2" color="textSecondary">Remember me</Typography>}
           />
+          <Link href="#" underline="none">Forgot Password?</Link>
+        </LoginBottomField>
+        <FormField>
+          <Button type="submit" variant="contained" color="primary" style={{textTransform: 'none', width: '80%'}}>
+            Signin
+          </Button>
         </FormField>
         <FormField>
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Login
-          </Button>
+          <Typography variant="body2" color="textSecondary">
+            Don't have an account? <Link href="/signup" underline="none">Signup</Link>
+          </Typography>
+        </FormField>
+        <FormField>
+          <LoginFooter>
+            <Typography variant="caption" color="textSecondary" align="center">
+              By using Callr you agree to the <Link href="#">Terms of Service</Link> and <Link href="#">Privacy Policy</Link>
+            </Typography>
+          </LoginFooter>
         </FormField>
       </FormGroup>
     </LoginContainer>

@@ -4,6 +4,7 @@ import Icon from '@mui/material/Icon';
 import TouchRipple from '@mui/material/ButtonBase';
 import AdminVertNavExpPanel from '../AdminVertNavExpPanel';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
@@ -52,6 +53,11 @@ const renderIcon = (iconName: string) => {
     case 'dashboard':
       return (
         <DashboardIcon sx={{ width: 48, fontSize: 18, verticalAlign: 'middle', paddingLeft: '1rem', paddingRight: '1rem' }} />
+      );
+      break;
+    case 'trash':
+      return (
+        <DeleteTwoToneIcon sx={{ width: 48, fontSize: 18, verticalAlign: 'middle', paddingLeft: '1rem', paddingRight: '1rem' }} />
       );
       break;
     case 'launch':
