@@ -14,6 +14,11 @@ import Input from '@mui/material/Input';
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
+import useAuth from "../../common/utils/useAuth";
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+import Slide, { SlideProps } from '@mui/material/Slide';
+import Alert from '@mui/material/Alert';
 
 const useStyles = makeStyles((theme: Theme) => ({
   settingsDiv: {
@@ -53,12 +58,24 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
+type TransitionProps = Omit<SlideProps, 'direction'>;
+
 const AdminProfile = () => {
   const classes = useStyles();
+  const { user, updateProfile } = useAuth();
 
   const [expanded, setExpanded] = useState<string | false>(false);
   const [showSaveBtns, setShowSaveBtns] = useState(false);
+  const [showLoaderOnSaveClick, setShowLoaderOnSaveClick] = useState(false);
   const [showResetPwdDialog, setShowResetPwdDialog] = useState(false);
+  const [snackBarData, setSnackBarData] = useState({
+    show: false,
+    error: false,
+    message: ''
+  });
+
+  const userName: string | null = user ? user['name'] : "";
+  const [profileName, setProfileName] = useState(userName);
 
   const handleExpandChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
@@ -70,6 +87,32 @@ const AdminProfile = () => {
 
   const openResetPasswordDialog = (event: any) => {
     setShowResetPwdDialog(true);
+  }
+
+  const handleProfileSave = async (event: any) => {
+    setShowSaveBtns(false);
+    setShowLoaderOnSaveClick(true);
+    await updateProfile(profileName);
+    setShowLoaderOnSaveClick(false);
+  }
+
+  const handleNameChange = (event: any) => {
+    setProfileName(event.target.value);
+  }
+
+  const handleSnackBarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBarData({
+      show: false,
+      error: false,
+      message: ''
+    });
+  };
+
+  const TransitionDown = (props: TransitionProps) => {
+    return <Slide {...props} direction="down" />;
   }
 
   return (
@@ -99,11 +142,12 @@ const AdminProfile = () => {
                 disableUnderline={true}
                 sx={{ height: 40 }}
                 inputProps={{style: {fontSize: 16, padding: '10px', cursor: 'pointer'}}}
-                defaultValue={"Rahul Sharma"}
+                value={profileName}
                 onFocus={event => {
                   event.target.select();
                   setShowSaveBtns(true);
                 }}
+                onChange={handleNameChange}
               />
             </ClickAwayListener>
             { showSaveBtns ?
@@ -116,6 +160,7 @@ const AdminProfile = () => {
                       variant="contained"
                       className="mx-auto"
                       sx={{ height: 24, width: 40}}
+                      onClick={handleProfileSave}
                     >
                       Save
                     </Button>
@@ -134,7 +179,7 @@ const AdminProfile = () => {
                     </Button>
                   </div>
                 </div>
-              ) : null
+              ) : showLoaderOnSaveClick ? <CircularProgress/> : null
             }
           </div>
         </div>
@@ -219,11 +264,42 @@ const AdminProfile = () => {
       {showResetPwdDialog && 
         (
           <AdminChangePasswordBox
-            handleClose={(event: any) => setShowResetPwdDialog(false)}
+            handleClose={() => setShowResetPwdDialog(false)}
             showDialog={showResetPwdDialog}
+            setSnackBar={setSnackBarData}
           />
         )
       }
+      <Snackbar
+        open={snackBarData.show}
+        autoHideDuration={5000}
+        onClose={handleSnackBarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        TransitionComponent={TransitionDown}
+      >
+        { snackBarData.error ?
+          (
+            <Alert
+              onClose={handleSnackBarClose}
+              severity="error"
+              sx={{ width: '100%' }}
+              variant="filled"
+            >
+              {snackBarData.message}
+            </Alert>
+          ) :
+          (
+            <Alert
+              onClose={handleSnackBarClose}
+              severity="success"
+              sx={{ width: '100%' }}
+              variant="filled"
+            >
+              {snackBarData.message}
+            </Alert>
+          )
+        }
+      </Snackbar>
     </Fragment>
   );
 }

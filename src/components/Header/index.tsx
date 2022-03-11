@@ -63,7 +63,7 @@ const Header = ({ t }: any) => {
     );
   };
 
-  if(["/login", "/dashboard", "/signup", "/trash", "/preferences"].includes(window.location.pathname)) {
+  if(["/login", "/dashboard", "/signup", "/trash", "/preferences", "/search"].includes(window.location.pathname)) {
     return null;
   }
 

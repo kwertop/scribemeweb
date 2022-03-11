@@ -18,13 +18,13 @@ const Default = () => {
     <Fragment>
       <div className="analytics m-sm-30 mt-6">
         <Grid container spacing={3}>
-          <Grid item lg={8} md={8} sm={12} xs={12}>
+          <Grid item lg={8.5} md={8.5} sm={12} xs={12}>
             <AdminSuspense>
               <HomeContainer />
             </AdminSuspense>
           </Grid>
 
-          <Grid item lg={4} md={4} sm={12} xs={12}>
+          <Grid item lg={3.5} md={3.5} sm={12} xs={12}>
             <UpgradeCard />
             <ReferCard />
           </Grid>

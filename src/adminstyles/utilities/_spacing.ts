@@ -17,6 +17,12 @@ export const spacingStyles = makeStyles((theme: Theme) => ({
         padding: '0px 16px',
       },
     },
+    '.pxl-sm-40': {
+      padding: '0px 0px 0px 40px',
+      [theme.breakpoints.down('sm')]: {
+        padding: '0px 16px 16px 0px',
+      },
+    },
     '.p-sm-24': {
       padding: '24px !important',
       [theme.breakpoints.down('sm')]: {
@@ -33,6 +39,12 @@ export const spacingStyles = makeStyles((theme: Theme) => ({
       padding: '0px 24px !important',
       [theme.breakpoints.down('sm')]: {
         padding: '0px 12px !important',
+      },
+    },
+    '.px-sm-8': {
+      padding: '0px 8px !important',
+      [theme.breakpoints.down('sm')]: {
+        padding: '0px 4px !important',
       },
     },
     '.px-sm-25': {
@@ -77,7 +89,13 @@ export const spacingStyles = makeStyles((theme: Theme) => ({
     '.mb-sm-30': {
       marginBottom: '30px',
       [theme.breakpoints.down('sm')]: {
-        marginBottom: '16px',
+        marginBottom: '15px',
+      },
+    },
+    '.mb-sm-18': {
+      marginBottom: '18px',
+      [theme.breakpoints.down('sm')]: {
+        marginBottom: '9px',
       },
     },
     '.w-full': { width: '100%' },

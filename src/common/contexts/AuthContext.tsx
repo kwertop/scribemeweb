@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import axios from 'axios';
 import AdminLoader from '../../components/AdminLoader';
+import { API_ENDPOINT } from '../../constants';
 
 const initialState = {
   isAuthenticated: false,
@@ -9,12 +10,18 @@ const initialState = {
 }
 
 const setSession = (accessToken: string | null) => {
+  let name = 'buckbeak-access-token';
   if (accessToken) {
     localStorage.setItem('accessToken', accessToken);
     axios.defaults.headers.common['token'] = accessToken;
+    let date = new Date();
+    date.setTime(date.getTime() + (365*24*60*60*1000));
+    let expires = "; expires=" + date.toUTCString();
+    document.cookie = name + "=" + (accessToken || "")  + expires + "; path=/";
   } else {
     localStorage.removeItem('accessToken');
     delete axios.defaults.headers.common['token'];
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   }
 }
 
@@ -55,6 +62,14 @@ const reducer = (state: any, action: any) => {
         user
       }
     }
+    case 'PROFILE_UPDATE': {
+      const { user } = action.payload
+
+      return {
+        ...state,
+        user
+      }
+    }
     default: {
       return { ...state }
     }
@@ -65,7 +80,8 @@ const AuthContext = createContext({
   ...initialState,
   login: (email: string, password: string) => { console.log("came here man"); Promise.resolve(); },
   logout: () => {},
-  register: (email: string, name: string, password?: string, profileImg?: string) => Promise.resolve()
+  register: (email: string, name: string, password?: string, profileImg?: string) => Promise.resolve(),
+  updateProfile: (name: string) => Promise.resolve()
 });
 
 interface Props {
@@ -77,7 +93,7 @@ export const AuthProvider = ({ children }: Props) => {
 
   const login = async (email: string, password: string) => {
     console.log("inside login function");
-    const response = await axios.post('http://localhost:3100/login', {
+    const response = await axios.post(`${API_ENDPOINT}/login`, {
       email,
       password
     });
@@ -95,8 +111,24 @@ export const AuthProvider = ({ children }: Props) => {
     });
   }
 
+  const updateProfile = async (name: string) => {
+    const response = await axios.post(`${API_ENDPOINT}/profile/update`, {
+      fullName: name
+    });
+
+    console.log(response.data);
+    const { user } = response.data;
+
+    dispatch({
+      type: 'PROFILE_UPDATE',
+      payload: {
+        user
+      }
+    });
+  }
+
   const register = async (email: string, name: string, password?: string, profileImg?: string) => {
-    const response = await axios.post('http://localhost:3100/signup', {
+    const response = await axios.post(`${API_ENDPOINT}/signup`, {
       email,
       password,
       name,
@@ -127,7 +159,7 @@ export const AuthProvider = ({ children }: Props) => {
 
         if (accessToken) {
           setSession(accessToken);
-          const response = await axios.get('http://localhost:3100/profile');
+          const response = await axios.get(`${API_ENDPOINT}/profile`);
           const { user } = response.data;
 
           dispatch({
@@ -169,7 +201,8 @@ export const AuthProvider = ({ children }: Props) => {
         ...state,
         login,
         logout,
-        register
+        register,
+        updateProfile
       }}
     >
       {children}

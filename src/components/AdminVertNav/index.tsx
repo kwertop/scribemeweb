@@ -5,6 +5,7 @@ import TouchRipple from '@mui/material/ButtonBase';
 import AdminVertNavExpPanel from '../AdminVertNavExpPanel';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
@@ -52,17 +53,22 @@ const renderIcon = (iconName: string) => {
   switch(iconName) {
     case 'dashboard':
       return (
-        <DashboardIcon sx={{ width: 48, fontSize: 18, verticalAlign: 'middle', paddingLeft: '1rem', paddingRight: '1rem' }} />
+        <DashboardIcon sx={{ width: 48, fontSize: 18 }} />
+      );
+      break;
+    case 'notes':
+      return (
+        <SpeakerNotesIcon sx={{ width: 48, fontSize: 18 }} />
       );
       break;
     case 'trash':
       return (
-        <DeleteTwoToneIcon sx={{ width: 48, fontSize: 18, verticalAlign: 'middle', paddingLeft: '1rem', paddingRight: '1rem' }} />
+        <DeleteTwoToneIcon sx={{ width: 48, fontSize: 18 }} />
       );
       break;
     case 'launch':
       return (
-        <LaunchIcon sx={{ width: 48, fontSize: 18, verticalAlign: 'middle', paddingLeft: '1rem', paddingRight: '1rem' }} />
+        <LaunchIcon sx={{ width: 48, fontSize: 18 }} />
       );
       break;
     default:
@@ -121,18 +127,17 @@ const AdminVertNav = ({ items }: Props) => {
             <TouchRipple
               key={item.name}
               name="child"
-              className="w-full"
             >
               {(() => {
-                  if (item.icon) {
-                    return renderIcon(item.icon);
-                  } else {
-                    return (
-                      <span className="item-icon icon-text">
-                        {item.iconText}
-                      </span>
-                    );
-                  }
+                if (item.icon) {
+                  return renderIcon(item.icon);
+                } else {
+                  return (
+                    <span className="item-icon icon-text">
+                      {item.iconText}
+                    </span>
+                  );
+                }
               })()}
               <span
                 className={clsx(
@@ -145,9 +150,9 @@ const AdminVertNav = ({ items }: Props) => {
               <div className="mx-auto"></div>
               {item.badge && (
                   <div
-                      className={`rounded bg-${item.badge.color} px-1 py-1px`}
+                    className={`rounded bg-${item.badge.color} px-1 py-1px`}
                   >
-                      {item.badge.value}
+                    {item.badge.value}
                   </div>
               )}
             </TouchRipple>
@@ -156,19 +161,18 @@ const AdminVertNav = ({ items }: Props) => {
       } else {
         return (
           <NavLink
-              key={index}
-              to={item.path}
-              activeClassName={classes.navItemActive}
-              className={clsx({
-                'flex justify-between h-44 border-radius-4 mb-2 compactNavItem whitespace-pre overflow-hidden': true,
-                [classes.navItem]: true,
-                [classes.compactNavItem]: mode === 'compact',
-              })}
+            key={index}
+            to={item.path}
+            activeClassName={classes.navItemActive}
+            className={clsx({
+              'flex justify-between h-44 border-radius-4 mb-2 compactNavItem whitespace-pre overflow-hidden': true,
+              [classes.navItem]: true,
+              [classes.compactNavItem]: mode === 'compact',
+            })}
           >
             <TouchRipple
               key={item.name}
               name="child"
-              className="w-full"
             >
               {item?.icon ? (
                 renderIcon(item.icon)

@@ -166,7 +166,11 @@ const AdminExportDialog = ({
                     inputProps={{style: {fontSize: 16, padding: '10px'}}}
                     defaultValue={fileName}
                   />
-                  <Typography>{audioSwitch && txtSwitch ? '.zip' : '.txt'}</Typography>
+                  <Typography>
+                    {
+                      audioSwitch && txtSwitch ? '.zip' : audioSwitch && !txtSwitch ? '.mp3' : '.txt'
+                    }
+                  </Typography>
                 </div>
               </div>
             )

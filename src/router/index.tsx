@@ -29,6 +29,10 @@ const Router = () => {
     {
       path: '/preferences',
       component: lazy(() => import('../views/Settings'))
+    },
+    {
+      path: '/search',
+      component: lazy(() => import('../views/notes/SearchResults'))
     }
   ];
 

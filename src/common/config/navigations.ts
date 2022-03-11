@@ -7,7 +7,7 @@ export const navigations = [
   {
     name: 'My Meetings',
     path: '/notes',
-    icon: 'dashboard'
+    icon: 'notes'
   },
   {
     name: 'Trash',

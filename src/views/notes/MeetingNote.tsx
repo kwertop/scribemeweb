@@ -13,7 +13,7 @@ const MeetingNote = () => {
   return (
     <AdminSuspense>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-          <AdminMeetingNote resource = { meetingNoteResource() }/>
+          <AdminMeetingNote resource = { meetingNoteResource(code) }/>
       </ErrorBoundary>
     </AdminSuspense>
   );

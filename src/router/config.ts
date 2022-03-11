@@ -40,6 +40,11 @@ const routes = [
     path: ["/preferences"],
     exact: true,
     component: "Dashboard"
+  },
+  {
+    path: ["/search"],
+    exact: true,
+    component: "Dashboard"
   }
 ];
 

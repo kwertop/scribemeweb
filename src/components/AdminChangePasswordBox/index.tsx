@@ -23,6 +23,10 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 
+import { API_ENDPOINT } from '../../constants';
+
+import axios from 'axios';
+
 interface State {
   value: string;
   show: boolean;
@@ -91,11 +95,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface Props {
   handleClose: any;
   showDialog: boolean;
+  setSnackBar: any;
 }
 
 const AdminChangePasswordDialog = ({
   handleClose,
-  showDialog }: Props) => {
+  showDialog,
+  setSnackBar }: Props) => {
   const classes = useStyles();
   const [oldPassword, setOldPassword] = useState<State>({
     value: '',
@@ -133,7 +139,7 @@ const AdminChangePasswordDialog = ({
 
   const handleOldPasswordChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setOldPassword({ ...oldPassword, [prop]: event.target.value });
-    if(oldPassword.value === '') {
+    if(event.target.value === '') {
       setShowOldPwdErr({
         error: true,
         message: 'Old Password cannot be empty'
@@ -149,21 +155,21 @@ const AdminChangePasswordDialog = ({
 
   const handleNewPasswordChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewPassword({ ...newPassword, [prop]: event.target.value });
-    if(newPassword.value === '') {
+    if(event.target.value === '') {
       setShowNewPwdErr({
         error: true,
         message: 'New Password cannot be empty'
       });
     }
     else {
-      if(oldPassword.value === newPassword.value) {
+      if(oldPassword.value === event.target.value) {
         setShowNewPwdErr({
           error: true,
           message: 'New password cannot be same as old'
         });
       }
       else {
-        const errPassword = validatePassword(newPassword.value);
+        const errPassword = validatePassword(event.target.value);
         if(errPassword === "") {
           setShowNewPwdErr({
             error: false,
@@ -182,7 +188,7 @@ const AdminChangePasswordDialog = ({
 
   const handleRetypePasswordChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setRetypePassword({ ...retypePassword, [prop]: event.target.value });
-    if(newPassword.value === retypePassword.value) {
+    if(newPassword.value === event.target.value) {
       setShowRetypePwdErr({
         error: false,
         message: ''
@@ -244,6 +250,36 @@ const AdminChangePasswordDialog = ({
       setShowRetypePwdErr({
         error: true,
         message: 'Retype Password cannot be empty'
+      });
+    }
+  }
+
+  const callResetPwdApi = async (event: any) => {
+    try {
+      const response: any = await axios.post(`${API_ENDPOINT}/profile/resetPassword`, {
+        oldPassword: oldPassword.value,
+        newPassword: newPassword.value
+      });
+      if(response.data.status === "ok") {
+        handleClose();
+        setSnackBar({
+          show: true,
+          error: false,
+          message: 'Password reset successfully'
+        });
+      }
+      else {
+        setShowOldPwdErr({
+          error: true,
+          message: response.data.message
+        });
+      }
+    }
+    catch(err: any) {
+      setSnackBar({
+        show: true,
+        error: true,
+        message: 'Something went wrong.'
       });
     }
   }
@@ -385,7 +421,7 @@ const AdminChangePasswordDialog = ({
         <Button
           color='primary'
           variant='contained'
-          onClick={handleClose}
+          onClick={callResetPwdApi}
           disabled={showOldPwdErr.error && showNewPwdErr.error && showRetypePwdErr.error}
         >
           Reset Password

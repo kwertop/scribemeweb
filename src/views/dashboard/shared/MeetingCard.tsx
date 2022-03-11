@@ -4,6 +4,7 @@ import {
   Icon,
   Grid,
   Avatar,
+  AvatarGroup,
   Hidden,
   Fab
 } from '@mui/material';
@@ -45,8 +46,52 @@ const MeetingCard = ({ note, index }: Props) => {
   const classes = useStyles();
   const history = useHistory();
 
+  const meetingAppIcon = (meetingApp: string) => {
+    switch(meetingApp) {
+      case "Zoom":
+        return '/img/svg/icons8-zoom-32.svg';
+      case "GoogleMeet":
+        return '/img/svg/icons8-google-meet-32.svg';
+      case "Teams":
+        return '/img/svg/icons8-microsoft-teams-32.svg';
+      case "Webex":
+        return '/img/svg/icons8-cisco-webex-meetings-32.svg';
+      default:
+        return '';
+    }
+  }
+
   const openMeetingOnClick = (event: any) => {
     history.push(`/notes/${note.code}`);
+  }
+
+  const stringToColor = (name: string) => {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < name.length; i += 1) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = '#';
+
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.substr(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+  }
+
+  const stringAvatar = (name: string) => {
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    };
   }
 
   return (
@@ -54,21 +99,12 @@ const MeetingCard = ({ note, index }: Props) => {
       <Grid item md={5} xs={7}>
         <div className="flex items-center">
           <Hidden smDown>
-            {index % 2 === 1 ? (
-              <Fab
-                className="ml-4 bg-error box-shadow-none"
-                size="small"
-              >
-                <Icon>star_outline</Icon>
-              </Fab>
-            ) : (
-              <Fab
-                className="ml-4 bg-green box-shadow-none text-white"
-                size="small"
-              >
-                <Icon>date_range</Icon>
-              </Fab>
-            )}
+            <Fab
+              className="ml-4 box-shadow-none text-white"
+              size="small"
+            >
+                <img src={meetingAppIcon(note.via)} />
+            </Fab>
           </Hidden>
           <span
             className={clsx(
@@ -83,27 +119,31 @@ const MeetingCard = ({ note, index }: Props) => {
 
       <Grid item md={3} xs={4}>
         <div className="text-muted">
-          {format((new Date(note.startTime)).getTime(), 'MM/dd/yyyy hh:mma')}
+          {format((new Date(note.startTime)).getTime(), 'E, MMM do Y hh:mma')}
         </div>
       </Grid>
 
       <Hidden smDown>
         <Grid item xs={3}>
-          <div className="flex relative face-group">
-            <Avatar
-              className="avatar"
-              src="/assets/images/face-4.jpg"
-            />
-            <Avatar
-              className="avatar"
-              src="/assets/images/face-4.jpg"
-            />
-            <Avatar
-              className="avatar"
-              src="/assets/images/face-4.jpg"
-            />
-            <Avatar className="text-14 avatar">+3</Avatar>
+          {/*<div className="flex relative face-group">*/}
+          <div className="flex relative">
+            <AvatarGroup max={4}>
+              <Avatar
+                className="avatar"
+                {...stringAvatar('Raju Sharma')}
+              />
+              <Avatar
+                className="avatar"
+                {...stringAvatar('Swati Sharma')}
+              />
+              <Avatar
+                className="avatar"
+                {...stringAvatar('Rahul Sharma')}
+              />
+              <Avatar className="text-14 avatar">+3</Avatar>
+            </AvatarGroup>
           </div>
+          {/*</div>*/}
         </Grid>
       </Hidden>
 

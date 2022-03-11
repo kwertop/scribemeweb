@@ -34,6 +34,9 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import RestoreRoundedIcon from '@mui/icons-material/RestoreRounded';
+import Snackbar from '@mui/material/Snackbar';
+
+import { API_ENDPOINT } from '../../../constants';
 
 import axios from 'axios';
 
@@ -149,6 +152,12 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
     meetingTitle: ''
   });
 
+  const [openDelForeverDialog, setOpenDelForeverDialog] = useState({
+    show: false,
+    meetingCode: '',
+    meetingTitle: ''
+  });
+
   const [openExportDialog, setOpenExportDialog] = useState({
     show: false,
     rowId: -1,
@@ -167,7 +176,7 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
 
   const onNextPageClick = async (inTrash: boolean) => {
     try {
-      const response: any = await axios.get(`http://localhost:3100/my/meetings?page=${meetingData.nextPage}&inTrash=${inTrash}`);
+      const response: any = await axios.get(`${API_ENDPOINT}/my/meetings?page=${meetingData.nextPage}&inTrash=${inTrash}`);
       setMeetingData({
         meetingNotes: response.data.meetingNotes,
         nextPage: response.data.nextPage,
@@ -182,7 +191,7 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
 
   const onPreviousPageClick = async (inTrash: boolean) => {
     try {
-      const response: any = await axios.get(`http://localhost:3100/my/meetings?page=${meetingData.previousPage}&inTrash=${inTrash}`);
+      const response: any = await axios.get(`${API_ENDPOINT}/my/meetings?page=${meetingData.previousPage}&inTrash=${inTrash}`);
       setMeetingData({
         meetingNotes: response.data.meetingNotes,
         nextPage: response.data.nextPage,
@@ -215,7 +224,7 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
 
   const handleOkClose = async () => {
     try {
-      const response = await axios.post("http://localhost:3100/meetings/delete", {
+      const response = await axios.post(`${API_ENDPOINT}/meetings/moveToTrash`, {
         codes: [ openDialog.meetingCode ]
       });
       meetingData.meetingNotes.splice(openDialog.rowId, 1);
@@ -254,6 +263,147 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
     setFormat(event.target.value);
   };
 
+  const handleDelForever = (index: number, code: string, title: string) => {
+    setOpenDelForeverDialog({
+      show: true,
+      meetingCode: code,
+      meetingTitle: title
+    });
+  }
+
+  const handleDelForeverClose = () => {
+    setOpenDelForeverDialog({
+      show: false,
+      meetingCode: '',
+      meetingTitle: ''
+    })
+  }
+
+  const handleDelConfirmClose = async () => {
+    const code: string = openDelForeverDialog.meetingCode;
+    try {
+      const response = await axios.post(`${API_ENDPOINT}/meetings/delete`, {
+        codes: [ code ]
+      });
+      if(response.data.status === 'ok') {
+        const meetingResponse = await axios.get(`${API_ENDPOINT}/my/meetings?page=${meetingData.currentPage}&inTrash=true`);
+        const meetingResponseData = meetingResponse.data;
+        if(meetingResponseData) {
+          setMeetingData({
+            meetingNotes: meetingResponseData.meetingNotes,
+            nextPage: meetingResponseData.nextPage,
+            previousPage: meetingResponseData.previousPage,
+            currentPage: meetingResponseData.currentPage
+          });
+        }
+      }
+    }
+    catch(err: any) {
+      console.log("error while calling api: ", err);
+    }
+    setOpenDelForeverDialog({
+      show: false,
+      meetingCode: '',
+      meetingTitle: ''
+    })
+  }
+
+  const handleRestore = async (index: number, code: string) => {
+    const currentPage = meetingData.currentPage;
+    try {
+      const response = await axios.post(`${API_ENDPOINT}/meetings/restore`, {
+        codes: [ code ]
+      });
+      if(response.data.status === 'ok') {
+        const meetingResponse = await axios.get(`${API_ENDPOINT}/my/meetings?page=${meetingData.currentPage}&inTrash=true`);
+        const meetingResponseData = meetingResponse.data;
+        if(meetingResponseData) {
+          setMeetingData({
+            meetingNotes: meetingResponseData.meetingNotes,
+            nextPage: meetingResponseData.nextPage,
+            previousPage: meetingResponseData.previousPage,
+            currentPage: meetingResponseData.currentPage
+          });
+        }
+      }
+    }
+    catch(err: any) {
+      console.log("error while calling api: ", err);
+    }
+  }
+
+  const handleRestoreSelected = async (event: any) => {
+    const checkedCodes: Array<string> = itemsChecked.filter((item: any) => item.isChecked).map((item: any) => item.code);
+    if(checkedCodes.length > 0)
+    {
+      try {
+        const response = await axios.post(`${API_ENDPOINT}/meetings/restore`, {
+          codes: checkedCodes
+        });
+        if(response.data.status === 'ok') {
+          const meetingResponse = await axios.get(`${API_ENDPOINT}/my/meetings?page=${meetingData.currentPage}&inTrash=true`);
+          const meetingResponseData = meetingResponse.data;
+          if(meetingResponseData) {
+            setMeetingData({
+              meetingNotes: meetingResponseData.meetingNotes,
+              nextPage: meetingResponseData.nextPage,
+              previousPage: meetingResponseData.previousPage,
+              currentPage: meetingResponseData.currentPage
+            });
+            setItemsChecked(meetingResponseData.meetingNotes.map((note: any, index: number) => {
+              return {
+                isChecked: false,
+                rowId: index,
+                code: note.code
+              }
+            }));
+            setAllChecked(false);
+            setPartialCheck(false);
+          }
+        }
+      }
+      catch(err: any) {
+        console.log("error while calling api: ", err);
+      }
+    }
+  }
+
+  const handleDelForeverSelected = async (event: any) => {
+    const checkedCodes: Array<string> = itemsChecked.filter((item: any) => item.isChecked).map((item: any) => item.code);
+    if(checkedCodes.length > 0)
+    {
+      try {
+        const response = await axios.post(`${API_ENDPOINT}/meetings/delete`, {
+          codes: checkedCodes
+        });
+        if(response.data.status === 'ok') {
+          const meetingResponse = await axios.get(`${API_ENDPOINT}/my/meetings?page=${meetingData.currentPage}&inTrash=true`);
+          const meetingResponseData = meetingResponse.data;
+          if(meetingResponseData) {
+            setMeetingData({
+              meetingNotes: meetingResponseData.meetingNotes,
+              nextPage: meetingResponseData.nextPage,
+              previousPage: meetingResponseData.previousPage,
+              currentPage: meetingResponseData.currentPage
+            });
+            setItemsChecked(meetingResponseData.meetingNotes.map((note: any, index: number) => {
+              return {
+                isChecked: false,
+                rowId: index,
+                code: note.code
+              }
+            }));
+            setAllChecked(false);
+            setPartialCheck(false);
+          }
+        }
+      }
+      catch(err: any) {
+        console.log("error while calling api: ", err);
+      }
+    }
+  }
+
   const fragments: any = meetingData.meetingNotes.length === 0 ?
     (
       <Fragment key={0}>
@@ -290,11 +440,11 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
               { isTrash ?
                 (
                   <Fragment>
-                    <MenuItem onClick={(event) => handleDelete(index, meetingNote.code, meetingNote.title)}>
+                    <MenuItem onClick={(event) => handleDelForever(index, meetingNote.code, meetingNote.title)}>
                       <DeleteForeverRoundedIcon />
                       <span className="pl-4">Delete Forever</span>
                     </MenuItem>
-                    <MenuItem onClick={(event) => handleExport(index, meetingNote.code, meetingNote.title)}>
+                    <MenuItem onClick={(event) => handleRestore(index, meetingNote.code)}>
                       <RestoreRoundedIcon />
                       <span className="pl-4"> Restore </span>
                     </MenuItem>
@@ -319,7 +469,7 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
         <div className="py-2" />
       </Fragment>
     )
-   );
+  );
 
   return (
     <div>
@@ -329,10 +479,10 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
             <Grid container spacing={1}>
               <Grid item lg={6} md={6} sm={6} xs={6} className="flex justify-start items-center px-sm-25">
                 <Checkbox size="small" onChange={onAllChecked} indeterminate={partialCheck} checked={allChecked}/>
-                <Button variant="text" startIcon={<RestoreOutlinedIcon />} sx={{ textTransform: 'none' }}>
+                <Button variant="text" startIcon={<RestoreOutlinedIcon />} sx={{ textTransform: 'none' }} onClick={handleRestoreSelected}>
                   Restore
                 </Button>
-                <Button variant="text" startIcon={<DeleteForeverOutlinedIcon />} sx={{ textTransform: 'none' }}>
+                <Button variant="text" startIcon={<DeleteForeverOutlinedIcon />} sx={{ textTransform: 'none' }} onClick={handleDelForeverSelected}>
                   Delete Forever
                 </Button>
               </Grid>
@@ -390,7 +540,7 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
             <Divider sx={{ borderBottomWidth: 3 }}/>
             <DialogContent>
               <DialogContentText id="alert-dialog-slide-description">
-                Are you sure you want to delete this conversation? <br/> <br/>
+                Are you sure you want to move this conversation to trash? <br/> <br/>
                 <Typography variant="body2" align="center">{openDialog.meetingTitle}</Typography>
               </DialogContentText>
             </DialogContent>
@@ -398,6 +548,32 @@ const MeetingCards = ({ resource, data, showCheckBox, isTrash, isList }: Props) 
             <DialogActions>
               <Button color='primary' variant='outlined' onClick={handleCancelClose}>Cancel</Button>
               <Button color='error' variant='contained' onClick={handleOkClose}>Ok</Button>
+            </DialogActions>
+          </Dialog>
+        )
+      }
+      {openDelForeverDialog.show && 
+        (
+          <Dialog
+            open={openDelForeverDialog.show}
+            TransitionComponent={Transition}
+            onClose={handleDelForeverClose}
+            aria-describedby="alert-dialog-slide-description"
+          >
+            <DialogTitle>
+              <Typography variant="h5" align="center">Delete</Typography>
+            </DialogTitle>
+            <Divider sx={{ borderBottomWidth: 3 }}/>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description">
+                Are you sure you want to permanently delete this conversation? <br/> <br/>
+                <Typography variant="body2" align="center">{openDelForeverDialog.meetingTitle}</Typography>
+              </DialogContentText>
+            </DialogContent>
+            <Divider sx={{ borderBottomWidth: 3 }}/>
+            <DialogActions>
+              <Button color='primary' variant='outlined' onClick={handleDelForeverClose}>Cancel</Button>
+              <Button color='error' variant='contained' onClick={handleDelConfirmClose}>Confirm</Button>
             </DialogActions>
           </Dialog>
         )

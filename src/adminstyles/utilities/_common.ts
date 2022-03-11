@@ -56,6 +56,10 @@ export const commonStyles = makeStyles((theme: Theme) => ({
       height: '32px !important',
       width: '32px !important',
     },
+    '.avatar-24': {
+      height: '24px !important',
+      width: '24px !important',
+    },
     '.face-group .avatar:not(:first-child)': {
       marginLeft: '-0.875rem !important',
     },
