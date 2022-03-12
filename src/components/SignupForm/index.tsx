@@ -89,8 +89,7 @@ const SignupForm = ({id}: LoginProps) => {
     event.preventDefault();
     setLoading(true);
     try {
-      const response = await login(email, password);
-      console.log(response);
+      const response = await register(email, name, password);
       history.push('/dashboard');
     } catch (e) {
       console.log(e);
@@ -171,7 +170,7 @@ const SignupForm = ({id}: LoginProps) => {
             label="Name"
             type="text"
             fullWidth
-            value={email}
+            value={name}
             onChange={e => setName(e.target.value)}
           />
         </FormField>
